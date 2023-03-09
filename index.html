@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trouvez la meilleure offre</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        justify-content: center;
+        align-items: flex-start;
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      #results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        margin-top: 50px;
+      }
+
+      .products {
+        justify-content: space-between;
+        align-items: center;
+        margin: 12px;
+        border: 1.1px solid rgb(159, 159, 159);
+        padding: 12px;
+        text-align: center;
+        border-radius: 12px;
+      }
+      
+      
+      #search-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      
+      #search-label {
+        font-size: 20px;
+        margin-bottom: 5px;
+      }
+      
+      .search-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 50px;
+      }
+      
+      #search {
+        background-image: url('https://img.icons8.com/material-outlined/24/000000/search--v1.png');
+        background-size: 20px;
+        background-position: 10px center;
+        background-repeat: no-repeat;
+        padding: 10px 15px 10px 40px;
+        font-size: 20px;
+        border: 2px solid #ccc;
+        border-radius: 20px;
+        border-top-left-radius: 20px;
+        border-bottom-left-radius: 20px;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        width: 400px;
+    }
+    
+      
+</style>
+  
+</head>
+<body>
+    <div id="search-container">
+        <br />
+        <label for="search" id="search-label">Rechercher un produit:<br /><br /></label>
+        <input type="text" id="search" placeholder="Rechercher un produit">
+        <div id="results"></div>
+    </div>
+  <script>
+    // Exemples de produits
+    const products = [
+    {
+        "name": "Fraises 454 g",
+        "description": "Prix régulier le plus cher: 6,97$ (1,53$/100g)",
+        "extra-info": "EXAMPLE",
+        "price-super-c": "4,99 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "6,97 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "5,99 $",
+        "price-g-iga": "1,32 $ / 100 g",
+        "price-maxi": "5,99 $",
+        "price-g-maxi": "1,32 $ / 100 g",
+        "price-metro": "4,99 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/fraises-454g.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/fruits-et-legumes/fruits/baies-et-cerises/fraises/p/665290001184", // super-c
+        "link2": "https://www.walmart.ca/fr/ip/fraises/871283", // walmart
+        "link3": "https://www.iga.net/fr/produit/fraises/00000_000000003338320027", // iga
+        "link4": "https://www.maxi.ca/fraises/p/20049778001_EA", // maxi
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/fruits-et-legumes/fruits/baies-et-cerises/fraises/p/665290001184" // metro
+      },
+      {
+        "name": "La Cage Ailes de poulet 550 g",
+        "description": "Prix régulier le plus cher: 14,99$ (2,73$/100g)",
+        "extra-info": "Extra",
+        "price-super-c": "9.99 $",
+        "price-g-super-c": "1,82 $ / 100g",
+        "price-walmart": "N/A",
+        "price-g-walmart": "N/A",
+        "price-iga": "14,99 $",
+        "price-g-iga": "2,73 $ / 100 g",
+        "price-maxi": "14,99 $",
+        "price-g-maxi": "2,73 $ / 100 g",
+        "price-metro": "14.99 $",
+        "price-g-metro": "2,73 $ / 100 g",
+        "image": "img/product/la-cage-ailes-de-poulet.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/produits-surgeles/entrees-et-collations/hors-d-oeuvre/ailes-de-poulet-buffalo-surgelees/p/850715000020",
+        "link2": "https://www.walmart.ca/fr/ip/ailes-de-poulet-buffalo-la-cage/6000201880168",
+        "link3": "https://www.iga.net/fr/produit/ailes-de-pouletpoivre-et-sel-marin/00000_000000085071500003",
+        "link4": "https://www.maxi.ca/ailes-de-poulet-pic-es-exceldor-buffalo/p/21286677_EA?icta=recommended-carousel",
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/produits-surgeles/entrees-et-collations/hors-d-oeuvre/ailes-de-poulet-buffalo-surgelees/p/850715000020"
+      },
+      {
+        "name": "Framboises 170 g", // name
+        "description": "Prix régulier le plus cher: 6,99$ (4,11$/100g)", // modify here
+        "extra-info": "EXAMPLE",
+        "price-super-c": "0 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "0 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "0 $",
+        "price-g-iga": "0 $ / 100 g",
+        "price-maxi": "0 $",
+        "price-g-maxi": "0 $ / 100 g",
+        "price-metro": "0 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/framboises-170g.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/fruits-et-legumes/fruits/baies-et-cerises/framboises/p/715756100019", // super-c
+        "link2": "https://www.walmart.ca/fr/ip/framboises/6000191272137", // walmart
+        "link3": "https://www.iga.net/fr/produit/framboisesrouges/00000_000000003338321026", // iga
+        "link4": "https://www.maxi.ca/framboises-1-2-chopine/p/20128938001_EA", // maxi
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/fruits-et-legumes/fruits/baies-et-cerises/framboises/p/715756100019" // metro
+      },
+      {
+        "name": "Framboises biologiques 170 g", // name
+        "description": "Prix régulier le plus cher: 6,99$ (4,11$/100g)", // modify here
+        "extra-info": "EXAMPLE",
+        "price-super-c": "0 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "0 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "0 $",
+        "price-g-iga": "0 $ / 100 g",
+        "price-maxi": "0 $",
+        "price-g-maxi": "0 $ / 100 g",
+        "price-metro": "0 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/framboises-biologiques-170g.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/fruits-et-legumes/fruits/bananes-et-plantains/banane/p/4011", // super-c
+        "link2": "https://www.walmart.ca/fr/ip/banane/875805", // walmart
+        "link3": "https://www.iga.net/fr/produit/bananes/00000_000000000000004011", // iga
+        "link4": "https://www.maxi.ca/bananes-grappe/p/20175355001_KG", // maxi
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/fruits-et-legumes/fruits/bananes-et-plantains/banane/p/4011" // metro
+      },
+      {
+        "name": "Banane", // name
+        "description": "Prix régulier le plus cher: 0,89$/lb (1,96$/kg)", // modify here
+        "extra-info": "EXAMPLE",
+        "price-super-c": "0 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "0 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "0 $",
+        "price-g-iga": "0 $ / 100 g",
+        "price-maxi": "0 $",
+        "price-g-maxi": "0 $ / 100 g",
+        "price-metro": "0 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/banane.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/fruits-et-legumes/fruits/bananes-et-plantains/banane/p/4011", // super-c
+        "link2": "https://www.walmart.ca/fr/ip/banane/875805", // walmart
+        "link3": "https://www.iga.net/fr/produit/bananes/00000_000000000000004011", // iga
+        "link4": "https://www.maxi.ca/bananes-grappe/p/20175355001_KG", // maxi
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/fruits-et-legumes/fruits/bananes-et-plantains/banane/p/4011" // metro
+      },
+      {
+        "name": "Bleuets 170 g", // name
+        "description": "Prix régulier le plus cher: 4,49$ (2,64$/100g)", // modify here
+        "extra-info": "EXAMPLE",
+        "price-super-c": "0 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "0 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "0 $",
+        "price-g-iga": "0 $ / 100 g",
+        "price-maxi": "0 $",
+        "price-g-maxi": "0 $ / 100 g",
+        "price-metro": "0 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/bleuets-170.jpg",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "https://www.superc.ca/allees/fruits-et-legumes/fruits/baies-et-cerises/bleuets/p/033383222288blu", // super-c
+        "link2": "https://www.walmart.ca/fr/ip/bleuets/6000197776949", // walmart
+        "link4": "https://www.maxi.ca/bleuets-1-2-chopine/p/20152465001_EA", // maxi
+        "link5": "https://www.metro.ca/epicerie-en-ligne/allees/fruits-et-legumes/fruits/baies-et-cerises/bleuets/p/033383222288" // metro
+      },
+      {
+        "name": "012345", // name
+        "description": "Prix régulier le plus cher: EXAMPLE", // modify here
+        "extra-info": "EXAMPLE",
+        "price-super-c": "0 $",
+        "price-g-super-c": "0 $ / 100 g",
+        "price-walmart": "0 $",
+        "price-g-walmart": "0 $ / 100 g",
+        "price-iga": "0 $",
+        "price-g-iga": "0 $ / 100 g",
+        "price-maxi": "0 $",
+        "price-g-maxi": "0 $ / 100 g",
+        "price-metro": "0 $",
+        "price-g-metro": "0 $ / 100 g",
+        "image": "img/product/EXAMPLE",
+        "image1": "img/grocery/super-c.jpg",
+        "image2": "img/grocery/walmart.jpg",
+        "image3": "img/grocery/iga.jpg",
+        "image4": "img/grocery/maxi.jpg",
+        "image5": "img/grocery/metro.jpg",
+        "image6": "img/grocery/super-c-x.jpg",
+        "image7": "img/grocery/walmart-x.jpg",
+        "image8": "img/grocery/iga-x.jpg",
+        "image9": "img/grocery/maxi-x.jpg",
+        "image10": "img/grocery/metro-x.jpg",
+        "link1": "EXAMPLE", // super-c
+        "link2": "EXAMPLE", // walmart
+        "link3": "EXAMPLE", // iga
+        "link4": "EXAMPLE", // maxi
+        "link5": "EXAMPLE" // metro
+      }
+    ];
+    
+    function search() {
+      const searchTerm = document.getElementById("search").value.trim(); // trim() pour supprimer les espaces en début et fin de chaîne
+      let results = "";
+
+      if (searchTerm === "") { // Si le champ de recherche est vide, ne rien afficher
+        document.getElementById("results").innerHTML = "";
+        return;
+      }
+
+
+      products.forEach(product => {
+        let image1 = "<img src='" + product.image6 + "' alt='" + product.name + "' style='width:80px'>";
+        let image2 = "<img src='" + product.image7 + "' alt='" + product.name + "' style='width:80px'>";
+        let image3 = "<img src='" + product.image8 + "' alt='" + product.name + "' style='width:80px'>";
+        let image4 = "<img src='" + product.image9 + "' alt='" + product.name + "' style='width:80px'>";
+        let image5 = "<img src='" + product.image10 + "' alt='" + product.name + "' style='width:80px'>";
+
+        if (product.link1) {
+          image1 = "<a href='" + product.link1 + "' target='_blank'><img src='" + product.image1 + "' alt='" + product.name + "' style='width:80px'></a>";
+        } else {
+            image1 = "<img src='" + product.image6 + "' alt='" + product.name + "' style='width:80px'>";
+        }
+        if (product.link2) {
+          image2 = "<a href='" + product.link2 + "' target='_blank'><img src='" + product.image2 + "' alt='" + product.name + "' style='width:80px'></a>";
+        } else {
+            image2 = "<img src='" + product.image7 + "' alt='" + product.name + "' style='width:80px'>";
+        }
+        if (product.link3) {
+          image3 = "<a href='" + product.link3 + "' target='_blank'><img src='" + product.image3 + "' alt='" + product.name + "' style='width:80px'></a>";
+        } else {
+          image3 = "<img src='" + product.image8 + "' alt='" + product.name + "' style='width:80px'>";
+        }
+        if (product.link4) {
+          image4 = "<a href='" + product.link4 + "' target='_blank'><img src='" + product.image4 + "' alt='" + product.name + "' style='width:80px'></a>";
+        } else {
+            imagee = "<img src='" + product.image9 + "' alt='" + product.name + "' style='width:80px'>";
+        }
+        if (product.link5) {
+          image5 = "<a href='" + product.link5 + "' target='_blank'><img src='" + product.image5 + "' alt='" + product.name + "' style='width:80px'></a>";
+        } else {
+            image5 = "<img src='" + product.image10 + "' alt='" + product.name + "' style='width:80px'>";
+        }
+        if (product.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            results += "<br />"
+            results += "<div class='" + 'products' + "'>";
+            results += "<h2>" + product.name + "</h2>";
+            results += "<img src='" + product.image + "' alt='" + product.name + "' style='width:140px'>";
+            results += "<br />"
+            results += "<p>" + product.description + "</p>";
+            results += image1  + image2 + image3 + image4 + image5;
+            results += "</div>";
+        }
+      });
+
+      // Affichage des résultats de recherche
+      if (results === "") {
+        results += "<br />";
+        results += "<p>Aucun produit trouvé.</p>";
+      }
+
+      document.getElementById("results").innerHTML = results;
+    }
+
+    // Écoute de l'événement input sur l'élément d'entrée de recherche
+    document.getElementById("search").addEventListener("input", () => {
+      search();
+    });
+  </script>
+</body>
+</html>
